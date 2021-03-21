@@ -15,11 +15,14 @@ for i in "$@" ; do
     fi
 
 #   use regex to check -n {{ value }}, this regex only accept numbers
-#   the reason of using regex instead of checking -n is due to in some conditions -n is not in parameters list {$@}
     re='^[0-9]+$'
     if [[ "$i" =~ ${re} ]]; then
-          numbers_flag=true;
           numbers_arg=$i
+    fi
+
+#   the reason of using two checking are due to in some conditions -n is not in parameters list {$@}
+    if [[ "$(echo "$0 $1" | grep -E -c '\-n')" -eq 1 ]] || [[ "$(echo "$@" | grep -E -c '\-n')" -eq 1 ]]; then
+          numbers_flag=true;
     fi
 done
 
