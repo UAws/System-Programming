@@ -1,0 +1,35 @@
+#!/bin/bash
+
+
+#https://www.baeldung.com/linux/use-command-line-arguments-in-bash-script
+
+upper_flag=false
+numbers_flag=false
+alphabet=ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ
+#echo ${alphabet:2:1}
+
+# Loop all parameters use $@
+for i in "$@" ; do
+    if [ "$i" == "-u" ]; then
+        upper_flag=true;
+    fi
+
+#   use regex to check -n {{ value }}, this regex only accept numbers
+#   the reason of using regex instead of checking -n is due to in some conditions -n is not in parameters list {$@}
+    re='^[0-9]+$'
+    if [[ "$i" =~ ${re} ]]; then
+          numbers_flag=true;
+          numbers_arg=$i
+    fi
+done
+
+  output="[${alphabet:${numbers_arg}:1}-ZA-${alphabet:${numbers_arg}-1:1}]"
+
+
+if [ "$upper_flag" = true ] && [ "$numbers_flag" = true ]; then
+  echo "${output}"
+elif [ $numbers_flag = true ]; then
+  echo "${output}" | tr "[:upper:]" "[:lower:]"
+fi
+
+
