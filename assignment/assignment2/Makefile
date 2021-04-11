@@ -1,10 +1,10 @@
 all: sequence pipeline
 
-sequence: sequence.c
-	gcc sequence.c -o sequence
+sequence: sequence.c common.c
+	gcc sequence.c common.c -o sequence
 
-pipeline: pipeline.c
-	gcc pipeline.c -o pipeline
+pipeline: pipeline.c common.c
+	gcc pipeline.c common.c -o pipeline
 
 clean:
 	rm sequence pipeline
