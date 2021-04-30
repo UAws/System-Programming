@@ -13,9 +13,15 @@ int main(int argc, char **argv){
     char **arguments;
     char **all_commands;
 
+    // initialize all double pointer array use malloc
+
     init_arrays(3,&commands, &arguments, &all_commands);
 
+    // while there are remaining commands:
+    //     read line from file
     int input_length = readInput(argc, argv, all_commands);
+
+    //  parse line into command and arguments
 
     split_command_argument(all_commands, arguments, commands);
 
