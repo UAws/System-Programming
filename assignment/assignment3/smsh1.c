@@ -23,6 +23,10 @@ int main()
 
 	while ( (cmdline = next_cmd(prompt, stdin)) != NULL ){
 		if ( (arglist = splitline(cmdline)) != NULL  ){
+
+            // for (int i = 0; arglist[i] != NULL ; ++i) {
+            //     printf("%s\n", arglist[i]);
+            // }
 			result = execute(arglist);
 			freelist(arglist);
 		}

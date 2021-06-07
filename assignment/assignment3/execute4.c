@@ -47,7 +47,7 @@ void redirection_in_fork_handler(char *const *commands, int i, char **arguments)
 
 // for part 3
 
-void globbing(char *argv[], char **commands);
+char ** globbing(char **argv, char **commands);
 
 void globbing_fork_handler(char *const *commands, int i, char **glob_args);
 
@@ -124,18 +124,30 @@ int execute(char *argv[])
                 // dbg(tmp_flag);
                 if (pipe_flag == 0) {
 
-                    // dbg("pipe no redirection");
+//                     dbg("pipe no redirection");
                     if (glob_flag == 0) {
+//                        dbg("normal exe");
                         execvp(commands[i], arguments);
 
                     } else {
-                        globbing(argv, commands);
+//                        dbg("globbing exe");
+
+
+                        char ** glob_arguments = globbing(argv, commands);
+
+//                        for (int j = 0; j < 20 ; ++j) {
+//                            dbg(temp_arguments[j]);
+//                        }
+
+                        execvp(commands[i], glob_arguments);
+                                sb_free(glob_arguments);
+
                     }
 
 
                 }else{
 
-                    // dbg("pipe + redirection");
+//                     dbg("pipe + redirection");
                     redirection_IO_handler(argv, commands);
                 }
 
@@ -216,51 +228,70 @@ void pipe_or_redirection_checking(char *const *argv, int *redirection_flag, char
 int globbing_helper(char const * epath, int eerrno) { return 0; }
 
 
-void globbing(char *argv[], char **commands){
+char ** globbing(char **argv, char **commands){
 
     for (int i = 0; i < sb_count(commands); ++i) {
 
-        // dbg(sb_count(commands));
+//         dbg(sb_count(commands));
 
         char **arguments = arguments_to_exec_args(argv, commands, i);
 
 
-        for (int j = 0; j < sb_count(arguments) - 1; ++j) {
+        for (int j = 0; j < sb_count(arguments) ; ++j) {
 
+//            dbg(arguments[j]);
             if (arguments[j] != NULL && strstr(arguments[j],"*") != NULL) {
 
 
-                // dbg( arguments[j]);
+//                 dbg( arguments[j]);
 
                 glob_t globbuf = {0};
 
                 glob(arguments[j], GLOB_DOOFFS, globbing_helper, &globbuf);
 
-                // dbg( globbuf.gl_pathc);
+//                 dbg( globbuf.gl_pathc);
 
                 char ** glob_args = NULL;
 
-                        sb_push(glob_args,arguments[j]);
+
+                for (int k = 0; arguments[k] != NULL; ++k) {
+//                    dbg(arguments[k]);
+                    if (strstr(arguments[k],"*") == NULL)
+                    {
+                                sb_push(glob_args,arguments[k]);
+                    }
+
+                }
 
                 for (size_t k = 0; k!= globbuf.gl_pathc ; ++k) {
 
-                    // dbg(globbuf.gl_pathv[k]);
+//                     dbg(globbuf.gl_pathv[k]);
                             sb_push(glob_args, globbuf.gl_pathv[k]);
 
                 }
 
                         sb_push(glob_args,NULL);
-                globbing_fork_handler(commands, i, glob_args);
+
+//                for (int k = 0; glob_args[k] != NULL; ++k) {
+//                    dbg(glob_args[k]);
+//                }
+
+//                globbing_fork_handler(commands, i, glob_args);
 
 
-                        sb_free(glob_args);
+//                        sb_free(glob_args);
 
-                globfree(&globbuf);
+
+                return glob_args;
+
 
             }
         }
 
     }
+
+    return NULL;
+
 
 }
 
@@ -275,6 +306,8 @@ void globbing_fork_handler(char *const *commands, int i, char **glob_args) {
 
         signal(SIGINT, SIG_DFL);
         signal(SIGQUIT, SIG_DFL);
+
+        // dbg(1);
 
         execvp(commands[i], glob_args);
         perror("execvp");
