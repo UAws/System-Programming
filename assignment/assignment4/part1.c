@@ -6,3 +6,48 @@
 
 //
 
+
+#include <stdio.h>
+#include <pthread.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include "slow_functions.h"
+
+int main(int argc, char **argv){
+
+
+    pthread_t * threads = malloc(sizeof(pthread_t) * 10);
+
+    pthread_t func_2_thread;
+
+    if (pthread_create(&func_2_thread, NULL, slow_function2, NULL))
+    {
+        fprintf(stderr, "Error creating thread\n");
+        return 1;
+    }
+
+    for (int i = 0; i < 10; ++i) {
+        if (pthread_create(&threads[i], NULL, slow_function1, NULL))
+        {
+            fprintf(stderr, "Error creating thread\n");
+            return 1;
+        }
+    }
+
+    for (int i = 0; i < 10; ++i) {
+        if(pthread_join(threads[i], NULL))
+        {
+            fprintf(stderr, "Error joining thread\n");
+            return 2;
+        }
+    }
+
+    if(pthread_join(func_2_thread, NULL))
+    {
+        fprintf(stderr, "Error joining thread\n");
+        return 2;
+    }
+
+    // pthread_mutex_destroy(&lock);
+
+}
