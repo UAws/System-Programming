@@ -9,3 +9,6 @@ add_executable(redirection
 add_executable(simple_shell_c
         assignment3/Simple_Shell_C.c
         )
+
+add_executable(for
+        for.c)
