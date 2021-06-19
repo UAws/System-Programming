@@ -5,7 +5,7 @@ set(CMAKE_C_STANDARD 99)
 
 add_executable(Computer_Systems main.c)
 
-set(CMAKE_C_FLAGS "-std=c99 -Wall -lpthread")
+set(CMAKE_C_FLAGS "-std=c99 -Wall -pthread")
 
 add_subdirectory(Test/)
 
@@ -47,3 +47,6 @@ add_executable(assignment4_part2
         assignment/assignment4/slow_functions.c
         assignment/assignment4/part2.c)
 add_executable(08_signal Lecture/Lecture14/08_signal.c)
+add_executable(05_early_exit Lecture/Lecture14/05_early_exit.c)
+add_executable(06_detach Lecture/Lecture14/06_detach.c)
+add_executable(07_thread_attr Lecture/Lecture14/07_thread_attr.c)
