@@ -59,6 +59,8 @@ int main(int argc, char * argv[])
 	if (do_exit)
 	{
 		pthread_exit(NULL);
+        // printf("haha");
+		// pthread_cancel(slow_thread_ptr);
 	}
 
 	return 0;
